@@ -406,6 +406,173 @@ service quality. The key components of the proposal include:
     leading to higher operational efficiency, cost savings, and improved
     customer satisfaction in the aviation industry.
 
+\subsection{Data Characteristics}
+\subsubsection{Volume}
+The flight data involves a massive amount of information collected from various sources.\\
+This includes:
+\begin{itemize}
+    \item Scheduled flight details.
+    \item Real-time flight tracking information (e.g., location, altitude, speed).
+    \item Historical data such as delays, cancellations, and performance metrics.
+\end{itemize}
+The size of the data grows continuously due to the high frequency of flights globally, with thousands of flights operating daily.
+
+\subsubsection{Velocity}
+Flight data updates occur at high speeds, particularly with real-time data feeds from sources like FlightRadar24 and FlightAware.\\
+For example:
+\begin{itemize}
+    \item GPS coordinates and flight status are updated every few seconds during flight.
+    \item Weather and air traffic data also change dynamically, impacting the speed of data inflow.
+\end{itemize}
+
+\subsubsection{Variety}
+The data encompasses diverse types and formats:
+\begin{itemize}
+    \item \textbf{Structured Data:} Tabular datasets like Airline On-Time Statistics include columns for flight numbers, departure/arrival times, delays, and cancellations.
+    \item \textbf{Semi-Structured Data:} JSON or XML data from APIs (e.g., FlightRadar24) includes hierarchical information like aircraft models, routes, and live positions.
+    \item \textbf{Unstructured Data:} Visual data from maps (e.g., Flight Air Map) or textual weather reports.
+\end{itemize}
+Each source contributes unique attributes and formats, reflecting the complexity of integration.
+\subsubsection{Visualization}
+Flight data is inherently spatial and temporal, making it suitable for visualization in various forms:
+\begin{itemize}
+    \item \textbf{Geographical Maps:} Real-time flight paths and airport locations provide spatial insights.
+    \item \textbf{Charts and Graphs:} Flight volumes, delay distributions, and airline performance metrics can be presented effectively in bar charts or time-series plots.
+    \item \textbf{Interactive Dashboards:} Combining different data points, such as weather overlays and congestion heatmaps, enhances user comprehension.
+\end{itemize}
+Our group will transform raw data into actionable insights by presenting it through charts and graphs in interactive dashboards or reports, enabling end-users to easily interpret and make informed decisions based on the data
+
+\section{Technical stacks}
+\subsection{MinIO (Data Lake)}
+MinIO is a high-performance, distributed object storage solution designed to handle large volumes of unstructured data. It is a lightweight and open-source software that provides an S3-compatible interface, which makes it highly compatible with a variety of applications and services. MinIO is often used for building scalable, high-performance data lakes, and it excels in environments where low-latency and high-throughput data access is critical.
+\begin{figure}[h!]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{Images/minIO.png}
+    \end{center}
+\end{figure}
+
+Key features of MinIO:
+\begin{itemize}
+    \item S3 Compatibility: MinIO fully supports the Amazon S3 API, making it easy to integrate with applications and tools that use S3 for storage. This compatibility also allows seamless migration from AWS S3 to MinIO in on-premises or hybrid-cloud environments.
+    \item Scalability: MinIO is designed to scale horizontally, meaning you can add more storage nodes to handle increasing data volumes without compromising performance. It supports distributed object storage across multiple servers, ensuring data availability and fault tolerance.
+    \item Performance: MinIO is optimized for high-performance workloads, delivering fast data throughput and low-latency access. It is particularly suitable for workloads involving large files, such as media files, backups, and big data analytics.
+    \item Security: MinIO offers strong security features, including server-side encryption, secure access using AWS IAM (Identity and Access Management) policies, and end-to-end encryption for data in transit. It supports integration with various identity providers for access control.
+    \item Simple & Lightweight: Unlike traditional enterprise-grade object storage systems, MinIO is simple to install, configure, and manage. Its lightweight architecture makes it ideal for use in environments with resource constraints, such as edge computing.
+\end{itemize}
+
+Differences between \textbf{MinIO} and other popular data lake solutions:
+\begin{table}[H]
+    \footnotesize
+    \begin{tabular}{|l|l|l|l|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Feature}}                                       & \multicolumn{1}{c|}{\textbf{MinIO}}                                                                       & \multicolumn{1}{c|}{\textbf{Amazon S3}}                                                                    & \multicolumn{1}{c|}{\textbf{Google Cloud Storage}}                                                         & \multicolumn{1}{c|}{\textbf{HDFS}}                                                                    & \multicolumn{1}{c|}{\textbf{Azure Blob Storage}}                                                           \\ \hline
+    \textbf{Type}                                                                & \begin{tabular}[c]{@{}l@{}}Open-source, \\ Distributed \\ Object Storage\end{tabular}                     & \begin{tabular}[c]{@{}l@{}}Managed \\ Object Storage\end{tabular}                                          & \begin{tabular}[c]{@{}l@{}}Managed \\ Object Storage\end{tabular}                                          & \begin{tabular}[c]{@{}l@{}}Distributed File \\ System (DFS)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}Managed \\ Object Storage\end{tabular}                                          \\ \hline
+    \textbf{Deployment}                                                          & \begin{tabular}[c]{@{}l@{}}On-premises \\ or Any Cloud\end{tabular}                                       & \begin{tabular}[c]{@{}l@{}}AWS Cloud \\ only\end{tabular}                                                  & \begin{tabular}[c]{@{}l@{}}Google Cloud \\ only\end{tabular}                                               & \begin{tabular}[c]{@{}l@{}}On-premises \\ or Cloud\end{tabular}                                       & \begin{tabular}[c]{@{}l@{}}Microsoft \\ Azure only\end{tabular}                                            \\ \hline
+    \textbf{Cost}                                                                & \begin{tabular}[c]{@{}l@{}}Low (No \\ recurring costs,\\ Open-source)\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Pay-per-use \\ (Can be \\ expensive with \\ large data \\ volumes)\end{tabular} & \begin{tabular}[c]{@{}l@{}}Pay-per-use \\ (Can be \\ expensive with \\ large data \\ volumes)\end{tabular} & \begin{tabular}[c]{@{}l@{}}Expensive \\ setup and \\ management\end{tabular}                          & \begin{tabular}[c]{@{}l@{}}Pay-per-use \\ (Can be \\ expensive with \\ large data \\ volumes)\end{tabular} \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Vendor Lock\\ -in\end{tabular}}           & \begin{tabular}[c]{@{}l@{}}No (Can be \\ deployed \\ anywhere)\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}Yes (AWS \\ dependency)\end{tabular}                                            & \begin{tabular}[c]{@{}l@{}}Yes (Google \\ Cloud \\ dependency)\end{tabular}                                & \begin{tabular}[c]{@{}l@{}}No (on-\\ premises, but \\ complex setup)\end{tabular}                     & \begin{tabular}[c]{@{}l@{}}Yes (Microsoft \\ Azure \\ dependency)\end{tabular}                             \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}API \\ Compatibility\end{tabular}}        & S3 Compatible                                                                                             & S3 API                                                                                                     & S3 API                                                                                                     & Custom API                                                                                            & S3 API                                                                                                     \\ \hline
+    \textbf{Performance}                                                         & \begin{tabular}[c]{@{}l@{}}High-\\ performance, \\ low-latency \\ access\end{tabular}                     & \begin{tabular}[c]{@{}l@{}}High-\\ performance \\ with AWS \\ integration\end{tabular}                     & \begin{tabular}[c]{@{}l@{}}High-\\ performance \\ with Google \\ Cloud \\ integration\end{tabular}         & \begin{tabular}[c]{@{}l@{}}High-\\ performance \\ for batch \\ processing\end{tabular}                & \begin{tabular}[c]{@{}l@{}}High-\\ performance \\ with Azure \\ integration\end{tabular}                   \\ \hline
+    \textbf{Scalability}                                                         & \begin{tabular}[c]{@{}l@{}}Horizontally \\ scalable, \\ suitable for \\ unstructured \\ data\end{tabular} & \begin{tabular}[c]{@{}l@{}}Highly scalable \\ within AWS \\ ecosystem\end{tabular}                         & \begin{tabular}[c]{@{}l@{}}Highly scalable \\ within Google \\ Cloud \\ ecosystem\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Scalable but \\ complex to \\ manage\end{tabular}                          & \begin{tabular}[c]{@{}l@{}}Highly scalable \\ within Azure \\ ecosystem\end{tabular}                       \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Data \\ Handling\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Ideal for \\ unstructured \\ data\end{tabular}                                 & \begin{tabular}[c]{@{}l@{}}Ideal for \\ unstructured \\ data\end{tabular}                                  & \begin{tabular}[c]{@{}l@{}}Ideal for \\ unstructured \\ data\end{tabular}                                  & \begin{tabular}[c]{@{}l@{}}Better suited \\ for structured \\ or semi-\\ structured data\end{tabular} & \begin{tabular}[c]{@{}l@{}}Ideal for \\ unstructured \\ data\end{tabular}                                  \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Integration \\ with PySpark\end{tabular}} & \begin{tabular}[c]{@{}l@{}}Seamless \\ integration \\ with PySpark \\ and other \\ tools\end{tabular}     & \begin{tabular}[c]{@{}l@{}}Seamless with \\ AWS services\\ (e.g., AWS\\ Lambda)\end{tabular}               & \begin{tabular}[c]{@{}l@{}}Seamless with \\ Google Cloud tools\end{tabular}                                & \begin{tabular}[c]{@{}l@{}}Requires \\ custom integration \\ with Hadoop \\ ecosystem\end{tabular}    & \begin{tabular}[c]{@{}l@{}}Seamless with \\ Azure services \\ (e.g., Azure \\ Databricks)\end{tabular}     \\ \hline
+    \end{tabular}
+    \end{table}
+
+Why MinIO is Suitable for the Project:
+\begin{itemize}
+    \item \textbf{Cost-efficiency:} MinIO is open-source and allows for on-premises or cloud deployments, making it a more cost-effective solution compared to the pay-per-use pricing models of S3, Google Cloud Storage, and Azure Blob Storage.
+    \item \textbf{Flexibility:} MinIO is not tied to a specific cloud provider, providing flexibility for deploying in multi-cloud or hybrid environments. This suits your project’s need to integrate multiple data sources.
+    \item \textbf{Performance:} MinIO provides high throughput and low-latency access to unstructured data, which is crucial for handling large flight data logs and sensor data.
+    \item \textbf{Scalability:} MinIO can scale horizontally to handle growing data volumes, making it a suitable solution as your data lake expands with more flight data.
+\end{itemize}
+This makes MinIO the optimal choice for building your data lake, ensuring efficient data storage and processing for flight data analytics.
+
+\subsection{PySpark (Processing)}
+PySpark is the Python API for Apache Spark, which is a distributed computing framework designed for processing large datasets in parallel across a cluster of computers. Apache Spark is one of the most widely used big data processing engines because of its ability to handle batch processing, real-time streaming, machine learning, and graph processing efficiently. PySpark allows Python developers to leverage Spark’s capabilities with a familiar Python interface.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{Images/pySpark.png}
+    \end{center}
+\end{figure}
+Key Features of PySpark:
+\begin{itemize}
+    \item \textbf{Distributed Processing:} PySpark can distribute tasks across a cluster, enabling parallel processing of large datasets.
+    \item \textbf{In-memory Processing:} It utilizes in-memory computation, which significantly boosts performance for certain workloads.
+    \item \textbf{Support for Various Data Formats:} PySpark supports a wide range of file formats such as CSV, Parquet, JSON, Avro, and more.
+    \item \textbf{DataFrames and SQL:} It includes DataFrames (similar to Pandas) for structured data processing and supports SQL-like queries through the Spark SQL API.
+    \item \textbf{Machine Learning:} It integrates MLlib for machine learning tasks, making it easy to run ML models on large datasets.
+    \item \textbf{Scalability:} PySpark is capable of handling data at petabyte scale across distributed clusters.
+    \item \textbf{Integration:} PySpark integrates well with other data storage systems like HDFS, MinIO, S3, YugabyteDB, and databases, making it versatile for different use cases.
+\end{itemize}
+
+Comparison with other data processing technologies 
+\begin{table}[H]
+    \footnotesize
+    \begin{tabular}{|l|l|l|l|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Feature/Aspect}}                                        & \multicolumn{1}{c|}{\textbf{PySpark}}                                                                   & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}Hadoop \\ (MapReduce)\end{tabular}}}                  & \multicolumn{1}{c|}{\textbf{Apache Flink}}                                                         & \multicolumn{1}{c|}{\textbf{Dask}}                                                                      & \multicolumn{1}{c|}{\textbf{Apache Beam}}                                                                                   \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Programming \\ Language\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Python (also \\ supports \\ Scala, Java)\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Java, Python (via \\ Hadoop \\ Streaming)\end{tabular}                            & \begin{tabular}[c]{@{}l@{}}Java, Scala, \\ Python\end{tabular}                                     & \begin{tabular}[c]{@{}l@{}}Python (Dask \\ API)\end{tabular}                                            & Java, Python, Go                                                                                                            \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Processing \\ Model\end{tabular}}                 & \begin{tabular}[c]{@{}l@{}}Batch, \\ Streaming, \\ MLlib\end{tabular}                                   & \begin{tabular}[c]{@{}l@{}}Batch \\ (MapReduce)\end{tabular}                                                 & \begin{tabular}[c]{@{}l@{}}Stream \\ processing \\ (real-time)\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Batch, \\ Streaming\end{tabular}                                             & \begin{tabular}[c]{@{}l@{}}Batch, \\ Streaming\end{tabular}                                                                 \\ \hline
+    \textbf{Ease of Use}                                                                 & \begin{tabular}[c]{@{}l@{}}Easy to use\\ for Python \\ developers\end{tabular}                          & \begin{tabular}[c]{@{}l@{}}More complex, \\ requires \\ Java/MapReduce \\ knowledge\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Easy to use, \\ with a focus \\ on stream \\ processing\end{tabular}    & \begin{tabular}[c]{@{}l@{}}Easy to use\\ for Python \\ users\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}Simplified API \\ for batch and \\ stream tasks\end{tabular}                                     \\ \hline
+    \textbf{Scalability}                                                                 & \begin{tabular}[c]{@{}l@{}}High \\ scalability, \\ distributed\end{tabular}                             & \begin{tabular}[c]{@{}l@{}}High \\ scalability, \\ distributed\end{tabular}                                  & \begin{tabular}[c]{@{}l@{}}High \\ scalability, \\ low latency\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Scalable,\\ often used for \\ in-memory \\ tasks\end{tabular}                & \begin{tabular}[c]{@{}l@{}}Scalable, \\ designed for \\ cloud-native \\ workflows\end{tabular}                              \\ \hline
+    \textbf{Fault Tolerance}                                                             & \begin{tabular}[c]{@{}l@{}}Built-in \\ fault tolerance\end{tabular}                                     & \begin{tabular}[c]{@{}l@{}}Built-in \\ fault tolerance\end{tabular}                                          & \begin{tabular}[c]{@{}l@{}}Built-in \\ fault tolerance\end{tabular}                                & \begin{tabular}[c]{@{}l@{}}Built-in \\ fault tolerance\end{tabular}                                     & \begin{tabular}[c]{@{}l@{}}Built-in \\ fault tolerance\end{tabular}                                                         \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Real-time \\ Processing\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Yes (via Spark\\ Streaming)\end{tabular}                                     & \begin{tabular}[c]{@{}l@{}}No (Hadoop \\ MapReduce \\ is batch-only)\end{tabular}                            & \begin{tabular}[c]{@{}l@{}}Yes \\ (designed \\ for stream \\ processing)\end{tabular}              & \begin{tabular}[c]{@{}l@{}}Yes (via \\ Dask's \\ distributed \\ scheduler)\end{tabular}                 & \begin{tabular}[c]{@{}l@{}}Yes (supports \\ real-time \\ processing)\end{tabular}                                           \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Batch \\ Processing\end{tabular}}                 & Yes                                                                                                     & Yes                                                                                                          & Yes                                                                                                & Yes                                                                                                     & Yes                                                                                                                         \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Integration \\ with Data \\ Sources\end{tabular}} & \begin{tabular}[c]{@{}l@{}}Easily \\ integrates \\ with HDFS, \\ S3, MinIO, \\ Databases\end{tabular}   & \begin{tabular}[c]{@{}l@{}}Integration with \\ HDFS, HBase, etc\end{tabular}                                 & \begin{tabular}[c]{@{}l@{}}Integration with \\ Kafka, HDFS, etc.\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}Integration \\ with local \\ and \\ distributed \\ file systems\end{tabular} & \begin{tabular}[c]{@{}l@{}}Integration with \\ multiple \\ sources, \\ including \\ Google Cloud\end{tabular}               \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Machine \\ Learning\end{tabular}}                 & Integrated MLlib                                                                                        & \begin{tabular}[c]{@{}l@{}}Not designed \\ for machine \\ learning\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}Supports \\ stream-based ML \\ (via FlinkML)\end{tabular}               & \begin{tabular}[c]{@{}l@{}}Limited (can \\ use external \\ libraries)\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}Limited \\ (supports batch \\ ML via external \\ systems)\end{tabular}                           \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Cost and \\ Resources\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Can be \\ resource-heavy \\ but optimized \\ for large datasets\end{tabular} & \begin{tabular}[c]{@{}l@{}}Resource-heavy, \\ especially for \\ MapReduce jobs\end{tabular}                  & \begin{tabular}[c]{@{}l@{}}Generally lighter, \\ especially for \\ stream processing\end{tabular}  & \begin{tabular}[c]{@{}l@{}}More efficient \\ for small to \\ medium-sized \\ clusters\end{tabular}      & \begin{tabular}[c]{@{}l@{}}Optimized for \\ cloud \\ environments, \\ cost-effective \\ for cloud \\ workloads\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Community \\ and Ecosystem\end{tabular}                   & \begin{tabular}[c]{@{}l@{}}Large \\ community, \\ many integrations\end{tabular}                        & \begin{tabular}[c]{@{}l@{}}Large community, \\ but outdated in \\ terms of modern \\ frameworks\end{tabular} & \begin{tabular}[c]{@{}l@{}}Growing \\ community, \\ strong in \\ stream \\ processing\end{tabular} & \begin{tabular}[c]{@{}l@{}}Smaller \\ community, \\ but growing \\ rapidly\end{tabular}                 & \begin{tabular}[c]{@{}l@{}}Strong \\ community in \\ cloud-native \\ ecosystems\end{tabular}                                \\ \hline
+    \end{tabular}
+    \end{table}
+
+PySpark is ideal for our flight data collection and delay analysis project due to its scalability and ability to process large datasets efficiently. It supports both batch and real-time processing, seamlessly integrating with our data lake (MinIO) and data warehouse (Yugabyte). PySpark’s powerful data transformation and analysis capabilities enable effective handling of flight delay data, making it a crucial tool for extracting actionable insights.
+
+\subsection{Yugabyte (Data warehouse)}
+Yugabyte is a high-performance, distributed SQL database designed for cloud-native applications. It offers strong consistency and horizontal scalability, making it suitable for handling large volumes of transactional data. Yugabyte combines the best features of traditional relational databases and NoSQL systems, supporting both SQL (PostgreSQL-compatible) and NoSQL APIs. This flexibility allows it to be used for a variety of use cases, including the storage of structured and semi-structured data in our project.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{Images/yugabyte.png}
+    \end{center}
+\end{figure}
+Comparison with other technologies
+\begin{table}[H]
+    \footnotesize
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Feature}}                              & \multicolumn{1}{c|}{\textbf{Yugabyte}}                                            & \multicolumn{1}{c|}{\textbf{Amazon Redshift}}                                    & \multicolumn{1}{c|}{\textbf{Google BigQuery}}                                    & \multicolumn{1}{c|}{\textbf{MySQL}}                                      \\ \hline
+    \textbf{Type}                                                       & \begin{tabular}[c]{@{}l@{}}Distributed SQL \\ Database\end{tabular}               & Data Warehouse                                                                   & Data Warehouse                                                                   & \begin{tabular}[c]{@{}l@{}}Relational \\ Database\end{tabular}           \\ \hline
+    \textbf{Data Model}                                                 & \begin{tabular}[c]{@{}l@{}}Relational \\ (PostgreSQL-\\ compatible)\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Columnar Storage\\ for Analytics\end{tabular}         & \begin{tabular}[c]{@{}l@{}}Columnar Storage\\ for Analytics\end{tabular}         & Relational                                                               \\ \hline
+    \textbf{Scalability}                                                & \begin{tabular}[c]{@{}l@{}}Horizontal \\ Scalability, \\ Distributed\end{tabular} & \begin{tabular}[c]{@{}l@{}}Scalable \\ (AWS-only)\end{tabular}                   & \begin{tabular}[c]{@{}l@{}}Scalable (Google \\ Cloud-only)\end{tabular}          & \begin{tabular}[c]{@{}l@{}}Vertical Scaling\\ (Limited)\end{tabular}     \\ \hline
+    \textbf{Performance}                                                & \begin{tabular}[c]{@{}l@{}}High for OLTP, \\ Low Latency\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Optimized for \\ OLAP\end{tabular}                    & \begin{tabular}[c]{@{}l@{}}Optimized for \\ OLAP\end{tabular}                    & \begin{tabular}[c]{@{}l@{}}Good for \\ OLTP\end{tabular}                 \\ \hline
+    \textbf{Consistency}                                                & \begin{tabular}[c]{@{}l@{}}Strong \\ Consistency, \\ ACID\end{tabular}            & \begin{tabular}[c]{@{}l@{}}Eventual \\ Consistency \\ (Analytics)\end{tabular}   & \begin{tabular}[c]{@{}l@{}}Eventual \\ Consistency \\ (Analytics)\end{tabular}   & \begin{tabular}[c]{@{}l@{}}Strong \\ Consistency, \\ ACID\end{tabular}   \\ \hline
+    \textbf{\begin{tabular}[c]{@{}l@{}}Query \\ Language\end{tabular}}  & \begin{tabular}[c]{@{}l@{}}SQL \\ (PostgreSQL)\end{tabular}                       & \begin{tabular}[c]{@{}l@{}}SQL \\ (Redshift-Specific)\end{tabular}               & \begin{tabular}[c]{@{}l@{}}SQL \\ (BigQuery SQL)\end{tabular}                    & \begin{tabular}[c]{@{}l@{}}SQL \\ (PostgreSQL\\ -specific)\end{tabular}  \\ \hline
+    \textbf{Use Case}                                                   & OLTP                                                                              & OLAP                                                                             & OLAP                                                                             & \begin{tabular}[c]{@{}l@{}}OLTP, \\ Complex Queries\end{tabular}         \\ \hline
+    \textbf{Deployment}                                                 & On-premises/Cloud                                                                 & AWS-only                                                                         & \begin{tabular}[c]{@{}l@{}}Google Cloud\\ only\end{tabular}                      & On-premises/Cloud                                                        \\ \hline
+    \textbf{Data Integrity}                                             & \begin{tabular}[c]{@{}l@{}}ACID, \\ Multi-region \\ Replication\end{tabular}      & \begin{tabular}[c]{@{}l@{}}Strong \\ Consistency \\ (Single-region)\end{tabular} & \begin{tabular}[c]{@{}l@{}}Strong \\ Consistency \\ (Single-region)\end{tabular} & \begin{tabular}[c]{@{}l@{}}ACID (Single-node\\  or Cluster)\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Integration \\ with PySpark\end{tabular} & \begin{tabular}[c]{@{}l@{}}Seamless \\ Integration\end{tabular}                   & \begin{tabular}[c]{@{}l@{}}Limited (AWS \\ services)\end{tabular}                & \begin{tabular}[c]{@{}l@{}}Limited (Google \\ Cloud services)\end{tabular}       & \begin{tabular}[c]{@{}l@{}}Good \\ (via JDBC/ODBC)\end{tabular}          \\ \hline
+    \end{tabular}
+    \end{table}
+Yugabyte is ideal for this project due to its distributed SQL architecture, providing both scalability and high availability. It combines the reliability of relational databases with the flexibility of NoSQL, making it well-suited for handling large flight delay datasets while ensuring consistency and integration with other technologies in the stack.
+
+\subsection{Power BI (Analysis and visualization)}
+Power BI is a business analytics tool developed by Microsoft that allows users to visualize data, share insights, and make data-driven decisions. It offers a range of features for data transformation, exploration, and presentation in a visually appealing and interactive format. With its cloud-based services, Power BI enables easy integration with various data sources, including cloud storage, databases, and even real-time data streams. Its intuitive drag-and-drop interface makes it accessible to both technical and non-technical users.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{Images/powerBI.png}
+    \end{center}
+\end{figure}
+
+Key Features:
+\begin{itemize}
+    \item \textbf{Data Connectors:} Integrates with a wide range of data sources, including databases, cloud services, and real-time data.
+    \item \textbf{DirectQuery:} Allows real-time access to large datasets without importing data into Power BI, improving performance and scalability.
+    \item \textbf{Customizable Dashboards:} Users can create personalized dashboards to monitor key metrics like flight delays.
+    \item \textbf{Real-time Data Streaming:} Capabilities to visualize real-time data for up-to-date decision-making.
+    \item \textbf{Advanced Analytics:} Supports machine learning models, DAX (Data Analysis Expressions), and custom calculations for deeper insights.
+    \item \textbf{Interactive Visualizations:} Offers a variety of visualizations like bar charts, line graphs, and heatmaps to represent trends and data patterns.
+\end{itemize}
+
+Power BI’s DirectQuery feature is especially beneficial for big data analysis, allowing real-time access to large and continuously changing datasets. This capability, combined with Power BI’s other features like customizable dashboards and advanced analytics, makes it an excellent choice for visualizing and analyzing flight delay data in this project.
 \section{How the application works}
 \subsection{Workflow}
 The aviation data application operates through a structured workflow that
@@ -436,14 +603,7 @@ into fact and dimension tables, which facilitates efficient retrieval and
 supports detailed analysis.
 
 \subsection*{Step 3: Analytics and reporting}
-In the \textbf{Analytics and Reporting} stage, the application leverages machine
-learning models to perform predictive analytics, such as forecasting maintenance
-needs and potential flight delays by analyzing historical and real-time data.
-This predictive capability allows the aviation industry to move from reactive to
-proactive operations. Additionally, the application visualizes key performance
-indicators (KPIs) and other metrics through user-friendly dashboards. These
-visualizations make complex data accessible and interpretable, supporting quick,
-data-driven decision-making and enhancing overall operational efficiency.
+In the \textbf{Analytics and Reporting} stage, the application analyzes historical and real-time flight data to identify potential flight delays. This data-driven approach enables the aviation industry to shift from reactive to proactive operations, allowing better anticipation of delays. Additionally, the application visualizes key performance indicators (KPIs) and other relevant metrics related to delays through user-friendly dashboards. These visualizations make complex data accessible and interpretable, supporting quick, data-driven decision-making and improving overall operational efficiency.
 
 \subsection{Benefits to stakeholders}
 The aviation data application provides significant benefits to various
@@ -506,49 +666,6 @@ The final phase, taking 2 weeks (Week 9 to Week 11), involves the full-scale
 implementation of the system, making it fully operational. This deployment phase
 ensures that the application is accessible to stakeholders, with all
 functionalities optimized for real-world use.
-
-\section{Case studies and Examples}
-    \subsection{Cebu Pacific’s Fuel Efficiency Program}
-    Cebu Pacific, a major airline in the Philippines, implemented the
-    \textbf{SkyBreathe} system — a big data and AI-driven solution focused on
-    optimizing fuel consumption. This system leverages advanced analytics to
-    track and analyze flight data, helping the airline make data-informed
-    decisions that reduce fuel use. By fostering a data-driven culture and
-    focusing on efficiency improvements, Cebu Pacific achieved significant cost
-    savings.
-
-    In 2017, Cebu Pacific saved over \textbf{11 million USD} by enhancing fuel
-    efficiency through SkyBreathe. This achievement highlights the potential
-    impact of big data and AI in the aviation industry, where even marginal
-    improvements in fuel consumption can lead to substantial financial and
-    environmental benefits. This case study serves as an example of how
-    data-driven solutions can support sustainability goals and operational
-    efficiency within the aviation sector.
-    \subsection{Delta Airlines’ Use of Data Analytics}
-    Delta Airlines successfully leveraged data analytics to enhance its baggage
-    handling processes and improve customer engagement. By using data-driven
-    insights, Delta was able to identify inefficiencies in baggage management
-    and implement solutions that streamlined operations. This data-centric
-    approach allowed the airline to track, predict, and reduce instances of
-    mishandled baggage.
-
-    As a result, Delta achieved a \textbf{71\% reduction in baggage
-    mishandling}, significantly improving its operational efficiency and
-    reducing customer frustration associated with lost or delayed luggage. This
-    improvement also contributed to a noticeable increase in customer
-    satisfaction scores, as passengers experienced smoother and more reliable
-    travel experiences. Delta’s use of data analytics exemplifies how strategic
-    data application can lead to tangible improvements in both operational
-    performance and customer service in the aviation industry.
-\section{Potential Challenges and Mitigation Strategies}
-Implementing a data-driven application in the aviation industry comes with a range of challenges that must be addressed to ensure successful deployment and operation. Here are some of the key challenges and corresponding strategies for mitigating them:
-\begin{itemize}
-    \item \textbf{Data Security and Privacy:} Protecting sensitive information is critical in aviation, where breaches can have serious consequences. To mitigate these risks, the system should incorporate strong encryption methods, role-based access controls, and regular security audits. These measures help safeguard data and ensure that only authorized personnel can access sensitive information, reducing the risk of unauthorized access and data breaches.
-    \item \textbf{Integration with Existing Systems:} Aviation companies often rely on a variety of legacy systems, making it challenging to integrate new solutions seamlessly. To address this, APIs and middleware solutions can be utilized to facilitate smooth communication between the new application and existing systems. This approach minimizes disruption and allows the new system to function harmoniously with the infrastructure already in place.
-    \item \textbf{Change Management:} Transitioning to a data-driven system may face resistance from employees unfamiliar with new technologies or processes. Developing a comprehensive training and communication plan is essential for easing this transition. Providing training sessions, resources, and open channels of communication can help stakeholders understand the benefits of the new system, fostering acceptance and smoother adoption.
-    \item \textbf{Regulatory Compliance:} The aviation industry is highly regulated, with strict standards around data governance and operational procedures. Ensuring adherence to aviation regulations and data governance standards is crucial. This can be achieved by continuously monitoring regulatory requirements and integrating compliance checks into the application’s operations. By aligning with industry standards, the application can avoid legal issues and maintain credibility.
-\end{itemize}
-$\quad$Addressing these challenges proactively allows for a smoother implementation process and ensures that the application operates effectively within the highly regulated and sensitive aviation environment.
 
 \nocite{*}
 \bibliographystyle{plainnat}
