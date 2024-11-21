@@ -492,12 +492,7 @@ end-users to easily interpret and make informed decisions based on the data
 
 \section{Technical stacks}
 \subsection{MinIO (Data Lake)}
-MinIO is a high-performance, distributed object storage solution designed to
-handle large volumes of unstructured data. It is a lightweight and open-source
-software that provides an S3-compatible interface, which makes it highly
-compatible with a variety of applications and services. MinIO is often used for
-building scalable, high-performance data lakes, and it excels in environments
-where low-latency and high-throughput data access is critical.
+MinIO is crucial for organizations that require scalable and efficient storage solutions for unstructured data. Its ability to integrate seamlessly with various cloud services, combined with its high performance, makes it a vital component in modern data infrastructure, especially for applications involving big data, machine learning, and large-scale data lakes.\cite{simplyblock_minio}
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{Images/minIO.png}
@@ -623,16 +618,11 @@ Why MinIO is Suitable for the Project:
     data volumes, making it a suitable solution as your data lake expands with
     more flight data.
 \end{itemize}
-This makes MinIO the optimal choice for building your data lake, ensuring
+This makes MinIO the optimal choice for building our data lake, ensuring
 efficient data storage and processing for flight data analytics.
 
 \subsection{PySpark (Processing)}
-PySpark is the Python API for Apache Spark, which is a distributed computing
-framework designed for processing large datasets in parallel across a cluster of
-computers. Apache Spark is one of the most widely used big data processing
-engines because of its ability to handle batch processing, real-time streaming,
-machine learning, and graph processing efficiently. PySpark allows Python
-developers to leverage Spark’s capabilities with a familiar Python interface.
+PySpark is the Python API for Apache Spark, a distributed computing framework designed to process large datasets in parallel across clusters. Apache Spark is renowned for its ability to handle batch processing, real-time streaming, machine learning, and graph processing efficiently. PySpark empowers Python developers to utilize these capabilities through an intuitive interface.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{Images/pySpark.png}
@@ -848,13 +838,7 @@ handling large flight delay datasets while ensuring consistency and integration
 with other technologies in the stack.
 
 \subsection{Power BI (Analysis and visualization)}
-Power BI is a business analytics tool developed by Microsoft that allows users
-to visualize data, share insights, and make data-driven decisions. It offers a
-range of features for data transformation, exploration, and presentation in a
-visually appealing and interactive format. With its cloud-based services, Power
-BI enables easy integration with various data sources, including cloud storage,
-databases, and even real-time data streams. Its intuitive drag-and-drop
-interface makes it accessible to both technical and non-technical users.
+Power BI is a business analytics tool by Microsoft that enables users to visualize data and share insights effectively. It provides robust features for data transformation, exploration, and interactive presentations. With cloud-based services, Power BI integrates seamlessly with various data sources, including databases, cloud storage, and real-time streams, making it accessible for both technical and non-technical users.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{Images/powerBI.png}
@@ -1120,6 +1104,62 @@ Below are some charts and graphs created with powerBI:
         \caption{Flight cancellations by month}
     \end{center}
 \end{figure}
+
+\section{Evaluation}
+\subsection{Data Evaluation}
+Data was collected from \textbf{FlightAware, Flightradar24, Flight Air Map, and the FAA}, providing comprehensive aviation information like flight schedules, tracking, and delays.
+
+\textbf{Data Cleaning \& Transformation}\\
+The data underwent an \textbf{ETL process:}
+\begin{itemize}
+    \item \textbf{Cleaning:} Removed duplicates, standardized formats, and resolved missing values.
+    \item \textbf{Enrichment:} Merged data from various sources for deeper insights.
+    \item \textbf{Loading: } Stored in a Star Schema model in the Data Warehouse.
+\end{itemize}
+
+\textbf{Storage and Quality}
+\begin{itemize}
+    \item Schema: Includes a fact table for flight metrics and dimensions like carrier\_dim, airport\_dim, and time\_dim.
+    \item Volume: Handles millions of records.
+\end{itemize}
+
+\subsection{System Evaluation}
+\textbf{Scalability}\\
+The system was designed to handle increasing data volumes efficiently:
+\begin{itemize}
+    \item \textbf{MinIO:} Provides scalable and fault-tolerant storage as a Data Lake.
+    \item \textbf{PySpark:} Supports distributed data processing for large datasets.
+    \item \textbf{YugabyteDB:} Ensures high-performance querying and scalability as a distributed Data Warehouse.
+\end{itemize}
+
+\textbf{Performance}
+\begin{itemize}
+    \item \textbf{ETL to Visualization Workflow:} The pipeline ensures processed data is quickly available for PowerBI dashboards.
+    \item \textbf{Query Execution:} YugabyteDB enabled fast analytical queries on the Star Schema.
+\end{itemize}
+
+\textbf{Fault Tolerance}
+\begin{itemize}
+    \item \textbf{MinIO:} Ensures data redundancy and recovery in case of failures.
+    \item \textbf{YugabyteDB:} Maintains high availability with distributed architecture.
+\end{itemize}
+
+\textbf{Integration}\\
+The technologies integrate seamlessly:
+\begin{itemize}
+    \item MinIO serves as the raw data repository for PySpark processing.
+    \item PySpark outputs are loaded into YugabyteDB, supporting downstream analytics.
+    \item PowerBI connects to YugabyteDB for visualization, providing real-time insights.
+\end{itemize}
+
+\textbf{Cost Efficiency}\\
+Utilized open-source technologies to minimize infrastructure costs while ensuring robust performance.
+
+\textbf{Visualization Capabilities}
+\begin{itemize}
+    \item \textbf{Interactive Dashboards:} Visualizations include flight delays, airport traffic, and carrier performance with filters for time, location, and other dimensions.
+    \item \textbf{Real-Time Insights:} Automated data refresh cycles keep dashboards up-to-date.
+\end{itemize}
 
 \nocite{*}
 \bibliographystyle{plainnat}
