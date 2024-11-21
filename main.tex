@@ -667,6 +667,70 @@ implementation of the system, making it fully operational. This deployment phase
 ensures that the application is accessible to stakeholders, with all
 functionalities optimized for real-world use.
 
+\section{Result}
+Our group has developed an application designed to streamline the collection, processing, and analysis of flight data. The application collects data from multiple trusted sources, ensuring the accuracy and reliability of the information. These raw datasets are then stored in a Data Lake, which serves as a centralized repository for efficient and scalable storage, allowing future use and exploration.\\
+To process the stored data, we utilized PySpark, a powerful tool for distributed data processing, ensuring that the data is cleaned, transformed, and prepared for analysis. After processing, the structured data is stored in Yugabyte, a distributed SQL database known for its scalability and fault tolerance. This enables fast, reliable querying and supports advanced analytical operations.\\
+For visualization and reporting, our team integrated Power BI to create customized dashboards. These dashboards are tailored to display critical insights such as flight delays, operational trends, and carrier performance. By leveraging the dynamic capabilities of Power BI, users can interact with the data in real-time, drill down into specific metrics, and generate reports suited to their requirements.\\
+This workflow demonstrates an end-to-end solution for flight data analysis, incorporating robust data engineering practices and intuitive analytics tools to deliver actionable insights.\\
+
+Below are some charts and graphs created with powerBI:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart1.png}
+        \newline
+        \caption{Delay breakdown by causes in minutes}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart2.png}
+        \newline
+        \caption{Delay over time}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart3.png}
+        \newline
+        \caption{Delay by carrier}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart4.png}
+        \newline
+        \caption{Delay by airport}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart5.png}
+        \newline
+        \caption{Monthly delay cause by carrier}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart6.png}
+        \newline
+        \caption{Cancellations and diversions by airport}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart7.png}
+        \newline
+        \caption{Flights and delay by year and airport}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=\textwidth]{Images/chart8.png}
+        \newline
+        \caption{Flight cancellations by month}
+    \end{center}
+\end{figure}
+
 \nocite{*}
 \bibliographystyle{plainnat}
 
